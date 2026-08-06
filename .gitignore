@@ -1,0 +1,16 @@
+# Personal and sensitive files
+resume/private/
+applications/private/
+interviews/private/
+*.private.md
+*.private.csv
+
+# Office temporary files
+~$*
+
+# Editor / OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
