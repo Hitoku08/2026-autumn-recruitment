@@ -4,9 +4,37 @@
 
 ## 使用说明
 
-- “自主解答”记录首次作答情况，便于复盘薄弱题型。
+- “自主解答”记录首次作答情况，“二刷”记录复习时能否独立完成。
 - 完成一轮后继续补充复习日期、易错点和更优解法。
 - 代码以理解和复习为目的，后续会持续校正与优化。
+
+## 目录
+
+- [数组与哈希表](#数组与哈希表)
+- [滑动窗口](#滑动窗口)
+- [普通数组](#普通数组)
+- [矩阵](#矩阵)
+- [链表](#链表)
+- [字符串](#字符串)
+- [二叉树](#二叉树)
+- [堆与优先级队列](#堆与优先级队列)
+- [栈](#栈)
+- [二分查找](#二分查找)
+- [技巧](#技巧)
+- [回溯算法](#回溯算法)
+- [动态规划](#动态规划)
+  - [01 背包问题](#01背包问题)
+  - [完全背包问题](#完全背包问题)
+  - [子序列问题](#子序列问题)
+- [图论](#图论)
+
+## 更新记录
+
+### 2026-08-09
+
+- **新增题目：** 994. 腐烂的橘子、207. 课程表、100. 最大岛屿的面积、101. 孤岛的总面积、102. 沉没孤岛、117. 软件构建、208. 实现 Trie（前缀树）。
+- **二刷 / 复习：** 102. 二叉树的层序遍历、46. 全排列、79. 单词搜索、131. 分割回文串、51. N 皇后、200. 岛屿数量。
+- **复盘备注：** N 皇后二刷仍未独立完成，但补充了使用三个 `unordered_set` 分别记录列、主对角线和副对角线的解法；岛屿数量新增广度优先搜索实现。
 
 ---
 
@@ -1999,7 +2027,7 @@ public:
 
 难度：简单
 
-自主解答：否
+自主解答：否；二刷：是
 
 思路：忘记了queue的size()方法，可以直接返回队列的大小
 
@@ -3065,7 +3093,7 @@ public:
 
 难度：简单
 
-自主解答：否
+自主解答：否；二刷：是
 
 思路：用一个数组记录某个num是否在path里。如果在的话，for循环中就直接跳过了。
 
@@ -3246,7 +3274,7 @@ public:
 
 难度：中等
 
-自主解答：否
+自主解答：否；二刷：是
 
 思路：这里使用回溯法来代替visited数组。当遍历到一个节点的时候使其变成0，防止进入无限循环。后续再恢复原有数值，这就是回溯的思想
 
@@ -3288,11 +3316,49 @@ public:
 };
 ```
 
+这一题和图论中的岛屿问题很像。二刷的时候我用一个visited数组来防止遍历回去无限循环。但是这里和岛屿问题不同的是，visited数组最后要回溯回去。
+
+代码如下：
+
+```C++
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        int m=board.size(),n=board[0].size();
+        int dir[4][2]={0,1,0,-1,1,0,-1,0};
+        bool result=false;
+        vector<vector<bool>>visited(m,vector<bool>(n,0));
+        auto dfs=[&](this auto&& dfs,int i,int j,int h)->void{
+            if(i<0||j<0||i>=m||j>=n||board[i][j]!=word[h]||visited[i][j])
+                return;
+            if(h==word.size()-1){
+                result=true;
+                return;
+            }
+            visited[i][j]=1;
+            for(int k=0;k<4;k++){
+                int next_i=i+dir[k][0],next_j=j+dir[k][1];
+                dfs(next_i,next_j,h+1);
+            }
+            visited[i][j]=0;
+        };
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(board[i][j]==word[0]){
+                    dfs(i,j,0);
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+
 ###### [131. 分割回文串 - 力扣（LeetCode）](https://leetcode.cn/problems/palindrome-partitioning/description/?envType=study-plan-v2&envId=top-100-liked)
 
 难度：中等偏难
 
-自主解答：否
+自主解答：否；二刷：是
 
 思路：想象一个长为n的字符串，有n个间隔。比如abc的间隔是a|b|c|。这一题相当于选间隔的组合问题。如果选第一个间隔就分割成a|bc，选第二个就是ab|c，选第三个就是abc|。上面是每一层的操作。a|bc这个节点往下递归，就是从b后面的这个间隔开始选，分别得到a|b|c和a|bc|；前者继续递归得到a|b|c|。所以这里循环的时候，也有一个startInd，而且切分都是从startInd开始，子串是[startInd,i]的左闭右闭区间。当startInd==s.length()的时候递归结束。
 
@@ -3393,7 +3459,7 @@ public:
 
 难度：困难
 
-自主解答：否
+自主解答：否；二刷：否
 
 思路：依旧回溯算法。递归深度为n，每一层也循环n次，其中n为棋盘的size。每次要判断一个点变成Queen的话是否是valid的，如果是的话就修改board状态并深入一层递归。
 
@@ -3454,6 +3520,44 @@ public:
 ```
 
 这一题然后可以优化。本质上N皇后问题和全排列是非常类似的问题，因为全排列是选了一个元素之后，这个元素在深度递归中就不能再选了，我们会用一个onPath数组记录某个元素是否被选；其实N皇后也一样，某一行的一列有了一个皇后之后，后面的行的相同列就不能再出现皇后了。这个在复习时可以实现
+
+二刷心得：使用unordered_set来代替onpath数组，这样更容易理解，只是开销稍微大一点。要使用三个集合来存储，分别存列、主对角线和副对角线的值。
+
+代码：
+
+```C++
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>>result;
+        vector<string>board(n,string(n,'.'));
+        unordered_set<int>colomns;
+        unordered_set<int>diag1;
+        unordered_set<int>diag2;
+        auto dfs=[&](this auto&&dfs,int row)->void{
+            if(row==n){
+                result.push_back(board);
+                return;
+            }
+            for(int col=0;col<n;col++){
+                if(colomns.contains(col)||diag1.contains(row+col)||diag2.contains(row-col))
+                    continue;
+                colomns.insert(col);
+                diag1.insert(row+col);
+                diag2.insert(row-col);
+                board[row][col]='Q';
+                dfs(row+1);
+                colomns.erase(col);
+                diag1.erase(row+col);
+                diag2.erase(row-col);
+                board[row][col]='.';
+            }
+        };
+        dfs(0);
+        return result;
+    }
+};
+```
 
 #### 动态规划
 
@@ -4671,9 +4775,11 @@ public:
 
 ###### [200. 岛屿数量 - 力扣（LeetCode）](https://leetcode.cn/problems/number-of-islands/description/?envType=study-plan-v2&envId=top-100-liked)
 
+**深度优先搜索**
+
 难度：中等
 
-自主解答：否
+自主解答：否；二刷：是
 
 思路：代码基本写对了，但是有些小细节，比如说grid的元素是char而不是0,1。注意学会使用lamda表达式的递归写法，第一个参数是thie auto &&self
 
@@ -4711,5 +4817,479 @@ public:
         return num;
     }
 };
+```
+
+**广度优先搜索**
+
+自主解答：否
+
+思路：广度优先搜索和二叉树的层序遍历一样，都要用到队列
+
+代码：
+
+```C++
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        // 广度优先搜索
+        int dir[4][2] = {0, 1, 0, -1, 1, 0, -1, 0};
+        int m = grid.size(), n = grid[0].size();
+        int count = 0;
+        vector<vector<bool>> visited(m, vector<bool>(n, 0));
+        auto bfs = [&](int i, int j) -> void {
+            queue<pair<int, int>> q;
+            q.push({i, j});
+            visited[i][j] = true;
+            while (!q.empty()) {
+                auto cur = q.front();
+                q.pop();
+                for (int k = 0; k < 4; k++) {
+                    int next_i = cur.first + dir[k][0];
+                    int next_j = cur.second + dir[k][1];
+                    if (next_i < 0 || next_j < 0 || next_i >= m ||
+                        next_j >= n || grid[next_i][next_j] == '0' ||
+                        visited[next_i][next_j] == true)
+                        continue;
+                    visited[next_i][next_j] = true;
+                    q.push({next_i, next_j});
+                }
+            }
+        };
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1' && visited[i][j] == false) {
+                    bfs(i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+};
+```
+
+###### [994. 腐烂的橘子 - 力扣（LeetCode）](https://leetcode.cn/problems/rotting-oranges/?envType=study-plan-v2&envId=top-100-liked)
+
+难度：中等偏难
+
+自主解答：否
+
+思路：多源的广度优先搜索。类似于二叉树的层序遍历，层序遍历是要首先把根节点放入队列。但是这里是要将所有一开始都是腐烂的节点放入队列
+
+代码：
+
+```C++
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        //广度优先搜索
+        int m=grid.size(),n=grid[0].size();
+        int dir[4][2]={0,1,0,-1,1,0,-1,0};
+        int minutes=-1;
+        int fresh=0;
+        queue<pair<int,int>>q;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1)
+                    fresh++;
+                else if(grid[i][j]==2)
+                    q.push({i,j});
+            }
+        }
+        if(fresh==0)
+            return 0;
+        while(!q.empty()){
+            int size=q.size();
+            while(size--){
+                auto [i,j]=q.front();
+                q.pop();
+                for(int k=0;k<4;k++){
+                    int next_i=i+dir[k][0];
+                    int next_j=j+dir[k][1];
+                    if(next_i<0||next_j<0||next_i>=m||next_j>=n||grid[next_i][next_j]!=1)
+                        continue;
+                    grid[next_i][next_j]=2;
+                    q.push({next_i,next_j});
+                    fresh--;
+                }
+            }
+            minutes++;
+        }
+        return fresh==0? minutes: -1;
+    }
+};
+```
+
+###### [207. 课程表 - 力扣（LeetCode）](https://leetcode.cn/problems/course-schedule/?envType=study-plan-v2&envId=top-100-liked)
+
+难度：中等偏难
+
+自主解答：否
+
+思路：这题要判断图是否有环。我使用的是深度优先遍历+回溯+集合来判断，如果节点出现在了集合中就说明有环了。但是这样有个缺点，时间复杂度会非常的大，因为包含了大量重复的判断，导致超时。代码如下
+```C++
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        // 判断有没有环
+        int n=prerequisites.size();
+        bool result=true;
+        // 定义邻接表
+        vector<vector<int>>graph(numCourses);
+        for(auto prerequisite:prerequisites){
+            graph[prerequisite[0]].push_back(prerequisite[1]);
+        }
+        auto dfs=[&](this auto&& self,int i,unordered_set<int>&us)->void{
+            if(us.find(i)!=us.end()){
+                result=false;
+                return;
+            }
+            us.insert(i);
+            for(auto neighbor:graph[i]){
+                self(neighbor,us);
+            }
+            us.erase(i);
+        };
+        for(int i=0;i<numCourses;i++){
+            unordered_set<int>us;
+            dfs(i,us);
+        }
+        return result;
+    }
+};
+```
+
+下面是三色标记法，简单又实用，不用使用复杂的unordered_set
+
+自主解答：否
+
+```C++
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        int n = prerequisites.size();
+        bool result = true;
+        // 定义邻接表
+        vector<vector<int>> graph(numCourses);
+        for (auto prerequisite : prerequisites) {
+            graph[prerequisite[0]].push_back(prerequisite[1]);
+        }
+        // 三色标记法，0表示未遍历，1表示在路径中，2表示该节点不在环中
+        vector<int> status(numCourses, 0);
+        auto dfs = [&](this auto&& dfs, int i) -> bool {
+            if (status[i] == 1)
+                return false;
+            if (status[i] == 2)
+                return true;
+            status[i] = 1;
+            for (int next : graph[i]) {
+                if (!dfs(next))
+                    return false;
+            }
+            status[i] = 2;
+            return true;
+        };
+        for (int i = 0; i < numCourses; i++) {
+            if (!dfs(i))
+                return false;
+        }
+        return true;
+    }
+};
+```
+
+###### [100. 最大岛屿的面积](https://kamacoder.com/problempage.php?pid=1172)
+
+难度：中等
+
+自主解答：是
+
+代码：
+
+```C++
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+int dir[4][2] = { 0,1,0,-1,1,0,-1,0 };
+int dfs(vector<vector<int>>&grid,vector<vector<bool>>&visited,int i,int j,int m,int n);
+int main(){
+    int m,n;
+    cin>>m>>n;
+    vector<vector<int>>grid(m,vector<int>(n));
+    vector<vector<bool>>visited(m,vector<bool>(n));
+    int maxArea=0;
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++)
+            cin>>grid[i][j];
+    }
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            maxArea=max(maxArea,dfs(grid,visited,i,j,m,n));
+        }
+    }
+    cout<<maxArea;
+    return 0;
+}
+int dfs(vector<vector<int>>&grid,vector<vector<bool>>&visited,int i,int j,int m,int n){
+    if(i<0||j<0||i>=m||j>=n||grid[i][j]==0||visited[i][j]==1)
+        return 0;
+    int area=1;
+    visited[i][j]=1;
+    for(int k=0;k<4;k++){
+        int next_i=i+dir[k][0];
+        int next_j=j+dir[k][1];
+        area+=dfs(grid,visited,next_i,next_j,m,n);
+    }
+    return area;
+}
+```
+
+###### [101. 孤岛的总面积](https://kamacoder.com/problempage.php?pid=1173)
+
+难度：困难
+
+自主解答：是
+
+思路：这题改了好久，有点复杂。使用深度优先的话不能提前return，需要使用一个布尔变量变量来记录是否是孤岛
+
+代码：
+
+```C++
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+int dir[4][2] = {0, 1, 0, -1, 1, 0, -1, 0};
+int dfs(vector<vector<int>> &grid, vector<vector<bool>> &visited, int i, int j,
+        int n, int m) {
+  bool isSea = false;
+  int area = 1;
+  visited[i][j] = 1;
+  for (int k = 0; k < 4; k++) {
+    int next_i = i + dir[k][0];
+    int next_j = j + dir[k][1];
+    if (next_i < 0 || next_j < 0 || next_i >= n || next_j >= m ||
+        grid[next_i][next_j] == 0 || visited[next_i][next_j] == 1)
+      continue;
+    int nextArea = dfs(grid, visited, next_i, next_j, n, m);
+    if (nextArea == 0)
+      isSea = true;
+    else
+      area += nextArea;
+  }
+  if (i == 0 || j == 0 || i == n - 1 || j == m - 1 || isSea)
+    return 0;
+  return area;
+}
+int main() {
+  int n, m;
+  cin >> n >> m;
+  vector<vector<int>> grid(n, vector<int>(m));
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      cin >> grid[i][j];
+    }
+  }
+  vector<vector<bool>> visited(n, vector<bool>(m, 0));
+  int island = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      if (grid[i][j] == 1 && visited[i][j] == 0) {
+        island += dfs(grid, visited, i, j, n, m);
+      }
+    }
+  }
+  cout << island;
+  return 0;
+}
+```
+
+###### [102. 沉没孤岛](https://kamacoder.com/problempage.php?pid=1174)
+
+难度：中等偏难
+
+自主解答：否
+
+思路：沿着矩阵四周遍历，把所有相连的1都变成0。这样就只剩下1是孤岛了。
+
+代码：
+
+```C++
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+int dir[4][2] = { 0,1,0,-1,1,0,-1,0 };
+void bfs(vector<vector<int>>&grid,int i,int j){
+	int m=grid.size(),n=grid[0].size();
+	grid[i][j]=0;
+	queue<pair<int,int>>q;
+	q.push({i,j});
+	while(!q.empty()){
+		auto cur=q.front();
+		q.pop();
+		int x=cur.first,y=cur.second;
+		grid[x][y]=0;
+		for(int k=0;k<4;k++){
+			int next_x=x+dir[k][0];
+			int next_y=y+dir[k][1];
+			if(next_x<0||next_y<0||next_x>=m||next_y>=n
+				||grid[next_x][next_y]==0)
+				continue;
+			q.push({next_x,next_y});
+		}
+	}
+}
+int main(){
+	int m,n;
+    cin>>m>>n;
+    vector<vector<int>>grid(m,vector<int>(n));
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++)
+            cin>>grid[i][j];
+    }
+	vector<vector<int>>grid_copy=grid;
+	// 遍历四周
+	for(int i=0;i<m;i++){
+		if(grid_copy[i][0]==1)
+			bfs(grid_copy,i,0);
+		if(grid_copy[i][n-1]==1)
+			bfs(grid_copy,i,n-1);
+	}
+	for(int j=0;j<n;j++){
+		if(grid_copy[0][j]==1)
+			bfs(grid_copy,0,j);
+		if(grid_copy[m-1][j]==1)
+			bfs(grid_copy,m-1,j);
+	}
+	for(int i=0;i<m;i++){
+		for(int j=0;j<n;j++){
+			if(grid[i][j]==1&&grid_copy[i][j]==1)
+				grid[i][j]=0;
+			cout<<grid[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+}
+```
+
+###### [117. 软件构建](https://kamacoder.com/problempage.php?pid=1191)
+
+难度：中等
+
+自主解答：否
+
+思路：这题考验图的拓扑排序。我们要使用一个indegree数组来记录所有节点的入度。然后把入度为0的节点放入队列中，后面再取出队列中的节点并修改改节点指向节点的入度，直到队列取空。
+
+代码：
+
+```C++
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+int main(){
+	int n,m,s,t;
+	cin>>n>>m;
+	vector<vector<int>>graph(n);
+	vector<int>indegree(n,0);
+	vector<int>result;
+	for(int i=0;i<m;i++){
+		cin>>s>>t;
+		graph[s].push_back(t);
+		indegree[t]++;
+	}
+	queue<int>q;
+	for(int i=0;i<n;i++){
+		if(indegree[i]==0)
+			q.push(i);
+	}
+	while(!q.empty()){
+		int front=q.front();
+		q.pop();
+		result.push_back(front);
+		// 修改节点的入度
+		for(int node: graph[front]){
+			indegree[node]--;
+			if(indegree[node]==0)
+				q.push(node);
+		}
+	}
+	if(result.size()!=n)
+		cout<<-1;
+	else{
+		for(int i=0;i<n-1;i++)
+			cout<<result[i]<<" ";
+		cout<<result[n-1];
+	}
+}
+```
+
+###### [208. 实现 Trie (前缀树) - 力扣（LeetCode）](https://leetcode.cn/problems/implement-trie-prefix-tree/?envType=study-plan-v2&envId=top-100-liked)
+
+难度：困难
+
+自主解答：否
+
+思路：前缀树，这是一棵多叉树，每个节点都记录多个子节点和一个isEnd标签
+
+代码：
+
+```C++
+class Trie {
+private:
+    struct TrieNode{
+        unordered_map<char,TrieNode*>children;
+        bool isEnd;
+        TrieNode():isEnd(false){}
+    };
+    TrieNode *root;
+public:
+    Trie() {
+        root=new TrieNode;
+    }
+
+    void insert(string word) {
+        TrieNode* node=root;
+        for(char c:word){
+            if(node->children.find(c)==node->children.end()){
+                node->children[c]=new TrieNode();
+            }
+            node=node->children[c];
+        }
+        node->isEnd=true;
+    }
+
+    bool search(string word) {
+        TrieNode* node=root;
+        for(char c:word){
+            if(node->children.find(c)==node->children.end()){
+                return false;
+            }
+            node=node->children[c];
+        }
+        return node->isEnd;
+    }
+
+    bool startsWith(string prefix) {
+        TrieNode* node=root;
+        for(char c:prefix){
+            if(node->children.find(c)==node->children.end()){
+                return false;
+            }
+            node=node->children[c];
+        }
+        return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
 ```
 
