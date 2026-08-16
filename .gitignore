@@ -1,9 +1,13 @@
 # Personal and sensitive files
 resume/private/
+resume/*.pdf
 applications/private/
 interviews/private/
 *.private.md
 *.private.csv
+
+# Generated working files
+/tmp/
 
 # Office temporary files
 ~$*
@@ -13,4 +17,3 @@ interviews/private/
 .vscode/
 .DS_Store
 Thumbs.db
-
