@@ -1,0 +1,114 @@
+%-------------------------------------------------------------------------------
+% English Resume - Game Developer (one page)
+% Compile on Overleaf with pdfLaTeX
+%-------------------------------------------------------------------------------
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,top=1.2cm,bottom=1.2cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{1.0}
+
+\definecolor{accent}{HTML}{1F3A5F}
+
+\titleformat{\section}{\color{accent}\large\bfseries\scshape}{}{0em}{}[\vspace{-6pt}\color{accent}\rule{\linewidth}{0.6pt}]
+\titlespacing*{\section}{0pt}{6pt}{4pt}
+
+\setlist[itemize]{leftmargin=1.2em,itemsep=0pt,topsep=1pt,parsep=0pt,partopsep=0pt,label=\textbullet}
+
+% \entry{Left bold}{Right}{Left italic}{Right italic}
+\newcommand{\entry}[4]{%
+  \begin{tabularx}{\linewidth}{@{}X r@{}}
+    \textbf{#1} & #2 \\
+    \textit{#3} & \textit{#4} \\
+  \end{tabularx}\vspace{-2pt}%
+}
+% \project{Title}{Tech stack}{Date}
+\newcommand{\project}[3]{%
+  \begin{tabularx}{\linewidth}{@{}X r@{}}
+    \textbf{#1} $|$ \small\textit{#2} & #3 \\
+  \end{tabularx}\vspace{-2pt}%
+}
+
+\begin{document}
+
+%----------------------------------- HEADER -----------------------------------
+\begin{center}
+  {\LARGE\bfseries Bite Chu} \\[3pt]
+  \small Software Development Engineer \quad$|$\quad
+  \href{mailto:your.email@example.com}{your.email@example.com} \quad$|$\quad
+  +86-XXX-XXXX-XXXX \quad$|$\quad
+  \href{https://github.com/your-id}{github.com/your-id}
+\end{center}
+\vspace{-6pt}
+
+%---------------------------------- EDUCATION ---------------------------------
+\section{Education}
+\entry{KTH Royal Institute of Technology}{Stockholm, Sweden}
+      {M.Sc. in Software Engineering}{Aug 2024 -- Dec 2026 (Expected)}
+\begin{itemize}
+  \item \textbf{Courses:} Distributed Systems, Software Engineering, Data Mining, Machine Learning.
+  \item \textbf{Honors:} KTH One-Year Scholarship (2025, top 5\%)
+\end{itemize}
+\vspace{2pt}
+\entry{Xi'an Jiaotong University (C9 League)}{Xi'an, China}
+      {B.Eng. in Computer Science and Technology}{Sep 2020 -- Jun 2024}
+\begin{itemize}
+  \item \textbf{Courses:} Data Structures \& Algorithms, Computer Organization, Computer Networks, Operating Systems, Databases, AI
+  \item \textbf{Honors:} Uniqlo Scholarship (2022, top 30\%); XJTU University Scholarship (2021, top 10\%)
+\end{itemize}
+
+%--------------------------------- EXPERIENCE ---------------------------------
+\section{Experience}
+\entry{ChipON Microelectronics}{Shanghai, China}
+      {Compiler Development Intern -- LLVM backend for the in-house KF32R RISC ISA}{Mar 2026 -- Jun 2026}
+\begin{itemize}
+  \item Built an automated assembly/disassembly verification pipeline for the KF32R ISA (\textbf{130+ instructions}) with \texttt{llvm-mc} / \texttt{llvm-objdump} and FileCheck, verifying round-trip consistency of assembly $\rightarrow$ machine code $\rightarrow$ disassembly.
+  \item Designed valid/invalid instruction test suites covering register out-of-range, immediate overflow and malformed syntax, improving verification coverage.
+  \item Extended the LLVM backend by modifying TableGen descriptions and the AsmParser, adding pseudo-instruction expansion and PC-relative branch support; gained a working understanding of relaxation and linker relocation.
+\end{itemize}
+\vspace{2pt}
+\entry{Fast Retailing (UNIQLO) China Trading Co., Ltd.}{Shanghai, China}
+      {Commercial IT Specialist Intern -- O2O (Online-to-Offline) System}{Jan 2024 -- Mar 2024}
+\begin{itemize}
+  \item Joined the Commercial IT team building an O2O system that connects UNIQLO's offline stores with the TikTok (Douyin) e-commerce platform to drive online sales.
+  \item Performed end-to-end functional testing of core O2O workflows, including online ordering, logistics tracking, returns/exchanges and inventory management, reporting and tracking defects with developers until resolution.
+\end{itemize}
+
+%---------------------------------- PROJECTS ----------------------------------
+\section{Projects}
+\project{AvaRat -- 2D Side-Scrolling Runner Game}{Unity, C\#, React, Firebase}{Mar 2025 -- Jun 2025}
+\begin{itemize}
+  \item 5-person team game: a rat switches between \textit{Ice} form (freezes liquids to speed up) and \textit{Fire} form (ignites gas for an explosive extra jump) to overcome terrain. Live demo: \href{https://avarat-add8a.web.app}{\underline{avarat-add8a.web.app}}
+  \item Implemented the Ice/Fire form-switching mechanic and character--environment interaction logic in Unity.
+  \item Built and deployed the showcase website with React + Firebase; took part in the full cycle from gameplay ideation, user analysis and market research to deployment and pricing.
+\end{itemize}
+\vspace{2pt}
+\project{Distributed Key-Value Store Based on Raft}{C++, Protobuf, Multithreading}{Jun 2026 -- Jul 2026}
+\begin{itemize}
+  \item Linearizable, partition-tolerant KV database that stays available as long as a majority of nodes are alive.
+  \item Implemented heartbeats and leader election driven by a timer thread pool, and log replication where the leader commits entries once a majority acknowledges, then applies them to the state machine.
+  \item Built \textbf{MprRpc}, an RPC framework on Protobuf with a custom wire protocol, and \textbf{SkipListPro}, a skip-list storage engine.
+  \item Guaranteed linearizability via unique request IDs (client IP + sequence number) with client-side retry.
+\end{itemize}
+
+%----------------------------------- SKILLS -----------------------------------
+\section{Technical Skills}
+\begin{itemize}
+  \item \textbf{C/C++:} OOP (encapsulation, inheritance, polymorphism), STL containers, common C++11 features.
+  \item \textbf{Algorithms:} Stacks, queues, linked lists, hash tables, binary trees; binary search, backtracking, greedy, DP, quicksort.
+  \item \textbf{CS Fundamentals:} TCP/IP, HTTP, TCP/UDP (handshake \& termination); memory management, process scheduling, IPC, synchronization.
+  \item \textbf{Tools:} Unity, LLVM (TableGen, llvm-mc, FileCheck), Git, Protobuf; proficient with AI coding agents (Claude Code, Codex).
+\end{itemize}
+
+
+\end{document}

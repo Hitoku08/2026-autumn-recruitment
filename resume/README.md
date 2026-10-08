@@ -7,6 +7,7 @@
 | 版本 | 日期 | 目标岗位 | 主要修改 | 文件 |
 | --- | --- | --- | --- | --- |
 | v0.1 | 2026-08-16 | 游戏研发 / C++ 开发 | 补充游戏经历、项目经历与 LLVM 实习经历，完成公开脱敏版 | [游戏研发工程师.md](./游戏研发工程师.md) |
+| v0.1-en | 2026-10-07 | 游戏研发 / C++ 开发（英文） | 基于 v0.1 翻译英文版；新增 Overleaf 一页版 LaTeX | [game-developer-en.md](./game-developer-en.md)、[game-developer-en.tex](./game-developer-en.tex) |
 
 ## 检查清单
 
